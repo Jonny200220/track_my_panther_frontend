@@ -18,14 +18,14 @@ export default function RootLayout() {
             headerShown: false, // Oculta completamente el encabezado
           }}
         />
-        <Stack.Screen
+        {/* <Stack.Screen
           name="TruckMap"
           options={{
             title: 'Mapa de Camión',
             headerStyle: { backgroundColor: '#F8F9FA' },
             headerTintColor: '#1D3557',
           }}
-        />
+        /> */}
       </Stack>
       <StatusBar style="auto"/>
     </>
