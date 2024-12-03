@@ -1,22 +1,50 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  FlatList,
+  TouchableOpacity,
+  StyleSheet,
+} from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-const trucks = [
+// Define el tipo del stack de navegación
+type RootStackParamList = {
+  TruckSelection: undefined;
+  TruckMap: { truck: Truck };
+};
+
+type Props = NativeStackScreenProps<RootStackParamList, 'TruckSelection'>;
+
+// Define el tipo para un camión
+type Truck = {
+  id: string;
+  name: string;
+  plate: string;
+  lastLocation: string;
+};
+
+// Lista de camiones
+const trucks: Truck[] = [
   { id: '1', name: 'Camión 3', plate: 'GHI-789', lastLocation: 'Monterrey' },
   { id: '2', name: 'Camión 4', plate: 'JKL-012', lastLocation: 'Puebla' },
 ];
 
-export default function TruckSelectionScreen({ navigation }) {
+export default function TruckSelectionScreen({ navigation }: Props) {
   const [searchTerm, setSearchTerm] = useState('');
 
-  const filteredTrucks = trucks.filter(truck =>
-    truck.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    truck.plate.toLowerCase().includes(searchTerm.toLowerCase())
+  // Filtra los camiones según el término de búsqueda
+  const filteredTrucks = trucks.filter(
+    truck =>
+      truck.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      truck.plate.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const renderTruckItem = ({ item }) => (
+  // Renderiza cada camión
+  const renderTruckItem = ({ item }: { item: Truck }) => (
     <TouchableOpacity
       style={styles.truckItem}
       onPress={() => navigation.navigate('TruckMap', { truck: item })}
@@ -27,7 +55,9 @@ export default function TruckSelectionScreen({ navigation }) {
       <View style={styles.truckInfo}>
         <Text style={styles.truckName}>{item.name}</Text>
         <Text style={styles.truckPlate}>{item.plate}</Text>
-        <Text style={styles.truckLocation}>Última ubicación: {item.lastLocation}</Text>
+        <Text style={styles.truckLocation}>
+          Última ubicación: {item.lastLocation}
+        </Text>
       </View>
     </TouchableOpacity>
   );
@@ -36,7 +66,12 @@ export default function TruckSelectionScreen({ navigation }) {
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Seleccionar Camión</Text>
       <View style={styles.searchContainer}>
-        <Feather name="search" size={20} color="#6C757D" style={styles.searchIcon} />
+        <Feather
+          name="search"
+          size={20}
+          color="#6C757D"
+          style={styles.searchIcon}
+        />
         <TextInput
           style={styles.searchInput}
           placeholder="Buscar por nombre o placa"
@@ -62,7 +97,6 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   title: {
-    // marginVertical: 50,
     fontSize: 24,
     fontWeight: 'bold',
     color: '#1D3557', // Azul profundo
