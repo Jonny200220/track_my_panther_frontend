@@ -7,64 +7,57 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from 'react-native';
-import { Feather } from '@expo/vector-icons';
+import { Feather, FontAwesome } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-// Define el tipo del stack de navegación
 type RootStackParamList = {
-  TruckSelection: undefined;
-  TruckMap: { truck: Truck };
+  BusSelection: undefined;
+  BusMap: { bus: Bus };
 };
 
-type Props = NativeStackScreenProps<RootStackParamList, 'TruckSelection'>;
+type Props = NativeStackScreenProps<RootStackParamList, 'BusSelection'>;
 
-// Define el tipo para un camión
-type Truck = {
+type Bus = {
   id: string;
   name: string;
   plate: string;
-  lastLocation: string;
+  route: string;
 };
 
-// Lista de camiones
-const trucks: Truck[] = [
-  { id: '1', name: 'Camión 3', plate: 'GHI-789', lastLocation: 'Monterrey' },
-  { id: '2', name: 'Camión 4', plate: 'JKL-012', lastLocation: 'Puebla' },
+const buses: Bus[] = [
+  { id: '1', name: 'Autobús 1', plate: 'ABC-123', route: 'Ruta Escolar A' },
+  { id: '2', name: 'Autobús 2', plate: 'DEF-456', route: 'Ruta Escolar B' },
 ];
 
-export default function TruckSelectionScreen({ navigation }: Props) {
+export default function BusSelectionScreen({ navigation }: Props) {
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Filtra los camiones según el término de búsqueda
-  const filteredTrucks = trucks.filter(
-    truck =>
-      truck.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      truck.plate.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredBuses = buses.filter(
+    bus =>
+      bus.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      bus.plate.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Renderiza cada camión
-  const renderTruckItem = ({ item }: { item: Truck }) => (
+  const renderBusItem = ({ item }: { item: Bus }) => (
     <TouchableOpacity
-      style={styles.truckItem}
-      onPress={() => navigation.navigate('TruckMap', { truck: item })}
+      style={styles.busItem}
+      onPress={() => navigation.navigate('BusMap', { bus: item })}
     >
-      <View style={styles.avatar}>
-        <Text style={styles.avatarText}>{item.name[0]}</Text>
+      <View style={styles.iconContainer}>
+        <FontAwesome name="bus" size={24} color="#1D3557" />
       </View>
-      <View style={styles.truckInfo}>
-        <Text style={styles.truckName}>{item.name}</Text>
-        <Text style={styles.truckPlate}>{item.plate}</Text>
-        <Text style={styles.truckLocation}>
-          Última ubicación: {item.lastLocation}
-        </Text>
+      <View style={styles.busInfo}>
+        <Text style={styles.busName}>{item.name}</Text>
+        <Text style={styles.busPlate}>{item.plate}</Text>
+        <Text style={styles.busRoute}>Ruta: {item.route}</Text>
       </View>
     </TouchableOpacity>
   );
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Seleccionar Camión</Text>
+      <Text style={styles.title}>Seleccionar Autobús</Text>
       <View style={styles.searchContainer}>
         <Feather
           name="search"
@@ -81,8 +74,8 @@ export default function TruckSelectionScreen({ navigation }: Props) {
         />
       </View>
       <FlatList
-        data={filteredTrucks}
-        renderItem={renderTruckItem}
+        data={filteredBuses}
+        renderItem={renderBusItem}
         keyExtractor={item => item.id}
         style={styles.list}
       />
@@ -93,20 +86,20 @@ export default function TruckSelectionScreen({ navigation }: Props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8F9FA', // Fondo gris claro
+    backgroundColor: '#F8F9FA',
     padding: 16,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#1D3557', // Azul profundo
+    color: '#1D3557',
     marginBottom: 16,
     textAlign: 'center',
   },
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFF', // Blanco
+    backgroundColor: '#FFF',
     borderRadius: 8,
     paddingHorizontal: 12,
     marginBottom: 16,
@@ -114,7 +107,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    elevation: 2, // Sombra en Android
+    elevation: 2,
   },
   searchIcon: {
     marginRight: 8,
@@ -122,16 +115,16 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     height: 40,
-    color: '#1D3557', // Texto azul profundo
+    color: '#1D3557',
     fontSize: 16,
   },
   list: {
     flex: 1,
   },
-  truckItem: {
+  busItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFF', // Blanco para tarjetas
+    backgroundColor: '#FFF',
     borderRadius: 8,
     padding: 12,
     marginBottom: 8,
@@ -139,36 +132,31 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 3,
-    elevation: 1, // Sombra para Android
+    elevation: 1,
   },
-  avatar: {
+  iconContainer: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#A8DADC', // Azul claro
+    backgroundColor: '#A8DADC',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
   },
-  avatarText: {
-    color: '#1D3557', // Azul profundo
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  truckInfo: {
+  busInfo: {
     flex: 1,
   },
-  truckName: {
+  busName: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#1D3557', // Azul profundo
+    color: '#1D3557',
   },
-  truckPlate: {
+  busPlate: {
     fontSize: 14,
-    color: '#6C757D', // Texto gris oscuro
+    color: '#6C757D',
   },
-  truckLocation: {
+  busRoute: {
     fontSize: 12,
-    color: '#6C757D', // Texto gris oscuro
+    color: '#6C757D',
   },
 });
